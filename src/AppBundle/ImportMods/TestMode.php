@@ -7,7 +7,7 @@
  */
 
 namespace AppBundle\ImportMods;
-use AppBundle\Mode;
+use AppBundle\ImportMods;
 
 class TestMode implements Mode
 {

@@ -7,8 +7,7 @@
  */
 
 namespace AppBundle\ImportMods;
-use AppBundle\Entity\Product;
-use AppBundle\Mode;
+use AppBundle\ImportMods;
 
 class StandartMode implements Mode
 {

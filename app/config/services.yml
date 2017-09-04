@@ -33,3 +33,7 @@ services:
     # AppBundle\Service\ExampleService:
     #     arguments:
     #         $someArgument: 'some_value'
+    AppBundle\Services\ImportService:
+            autowire: true
+            public: true
+            arguments: ['@service_container']

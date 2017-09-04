@@ -6,7 +6,9 @@
  * Time: 19.58
  */
 
+namespace AppBundle\ImportMods;
+
 interface Mode
 {
-    function import();
+    function import(array $products);
 }

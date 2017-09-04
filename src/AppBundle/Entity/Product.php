@@ -3,12 +3,17 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Product
  *
  * @ORM\Table(name="tblProductData", uniqueConstraints={@ORM\UniqueConstraint(name="strProductCode", columns={"strProductCode"})})
  * @ORM\Entity
+ * @Assert\Expression(
+ *     "this.getCost() >= 5 or this.getStock() >= 10",
+ *     message="Any stock item which costs less that $5 and has less than 10 stock will not be imported", groups={"costAndStockConstraint"}
+ * )
  */
 class Product
 {
@@ -26,8 +31,9 @@ class Product
      *
      * @ORM\Column(name="dbProductCost", type="float")
      *
-     * @Assert\GreaterThan(1000)
-     * @Assert\Type("float", message="The value {{ value }} is not a valid {{ type }}.")
+     * @Assert\NotBlank(message="Cost should not be blank")
+     * @Assert\Type(type="numeric", message="Cost must be numeric and has type float")
+     * @Assert\LessThan(value=1000, message="Cost should be less then 1000")
      */
     private $cost;
 
@@ -35,8 +41,9 @@ class Product
      * @var integer
      *
      * @ORM\Column(name="intProductStock", type="integer")
+     * @Assert\NotBlank(message="Stock should not be blank")
+     * @Assert\Type(type="numeric", message="Stock must be of type integer")
      *
-     * @Assert\LessThan(10)
      */
     private $stock;
     /**
@@ -45,7 +52,7 @@ class Product
      * @ORM\Column(name="strProductName", type="string", length=50, nullable=false)
      *
      *
-     * @Assert\NotNull(message="Product name must be requare")
+     * @Assert\NotBlank(message="Product name should not be blank");
      * @Assert\Type("string", message="The value {{ value }} is not a valid {{ type }}.")
      */
     private $name;
@@ -53,6 +60,7 @@ class Product
     /**
      * @var string
      *
+     * @Assert\NotBlank(message="Product description should not be blank");
      * @ORM\Column(name="strProductDesc", type="string", length=255, nullable=false)
      */
     private $desc;
@@ -60,6 +68,7 @@ class Product
     /**
      * @var string
      *
+     * @Assert\NotBlank(message="Product code should not be blank")
      * @ORM\Column(name="strProductCode", type="string", length=10, nullable=false)
      */
     private $code;
@@ -72,9 +81,10 @@ class Product
     private $addAt;
 
     /**
-     * @var \DateTime
+     * @var \string
      *
-     * @ORM\Column(name="dtmDiscontinued", type="datetime", nullable=true)
+     * @Assert\DateTime(message="This property should be a DateTime")
+     * @ORM\Column(name="dtmDiscontinued", type="string", nullable=true)
      */
     private $discontinued;
 

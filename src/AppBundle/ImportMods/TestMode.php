@@ -1,0 +1,19 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: d2.kozlovsky
+ * Date: 4.9.17
+ * Time: 20.01
+ */
+
+namespace AppBundle\ImportMods;
+use AppBundle\Mode;
+
+class TestMode implements Mode
+{
+    public function __construct() {}
+
+    public function import(array $products) {
+
+    }
+}

@@ -7,6 +7,14 @@ imports:
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: en
+    mapping:
+      '[Product Code]': '[code]'
+      '[Product Name]': '[name]'
+      '[Product Description]': '[desc]'
+      '[Stock]': '[stock]'
+      '[Cost in GBP]': '[cost]'
+      '[Discontinued]': '[discontinued]'
+
 
 framework:
     #esi: ~

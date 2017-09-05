@@ -3,11 +3,14 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use League\Csv\Exception;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * Product
  *
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ProductRepository")
  * @ORM\Table(name="tblProductData", uniqueConstraints={@ORM\UniqueConstraint(name="strProductCode", columns={"strProductCode"})})
  * @ORM\Entity
  * @Assert\Expression(
@@ -75,16 +78,14 @@ class Product
 
     /**
      * @var \DateTime
-     *
      * @ORM\Column(name="dtmAdded", type="datetime", nullable=true)
      */
     private $addAt;
 
     /**
-     * @var \string
+     * @var \DateTime
      *
-     * @Assert\DateTime(message="This property should be a DateTime")
-     * @ORM\Column(name="dtmDiscontinued", type="string", nullable=true)
+     * @ORM\Column(name="dtmDiscontinued", type="datetime", nullable=true)
      */
     private $discontinued;
 
@@ -93,7 +94,8 @@ class Product
      *
      * @ORM\Column(name="stmTimestamp", type="datetime", nullable=false)
      */
-    private $timestamp = 'CURRENT_TIMESTAMP';
+    private $timestamp;
+
 
     /**
      * @return int
@@ -206,7 +208,6 @@ class Product
     {
         $this->addAt = $addAt;
     }
-
     /**
      * @return \DateTime
      */
@@ -220,7 +221,9 @@ class Product
      */
     public function setDiscontinued($discontinued)
     {
-        $this->discontinued = $discontinued;
+        if (strnatcasecmp($discontinued, 'yes') === 0) {
+            $this->discontinued = new \DateTime("now");
+        }
     }
 
     /**
@@ -239,5 +242,25 @@ class Product
         $this->timestamp = $timestamp;
     }
 
+    public function __toString() : string
+    {
+        $resultStr = 'Code: ' . $this->code .
+            ' Name: ' . $this->name .
+            ' Desc: ' . $this->desc .
+            ' Cost: ' . $this->cost .
+            ' Stock:' . $this->stock;
+        if ($this->discontinued !== null) {
+            $resultStr .= ' Discontinued' . $this->discontinued->format('Y-m-d H:i:s');
+        }
+        if ($this->addAt !== null) {
+            $resultStr .= ' Add at ' . $this->addAt->format('Y-m-d H:i:s');
+        }
+
+        return $resultStr;
+    }
+    public function __set($property, $value)
+    {
+        $this->$property = $value;
+    }
 }
 

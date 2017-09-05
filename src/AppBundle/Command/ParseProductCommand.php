@@ -31,16 +31,19 @@ class ParseProductCommand extends ContainerAwareCommand
     {
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
         $filePath = $input->getArgument('filePath');
-        //$mode = $input->getArgument('mode');
+        $mode = $input->getOption('mode');
+
+        $p = $this->getContainer()->getParameter('mapping');
 
         $importService = $this->getContainer()->get(ImportService::class);
 
-        //if (strcasecmp($mode, 'test')) {
-            //$importService->handle($filePath, new TestMode());
-        //} else {
+        if (strcasecmp($mode, 'test') === 0) {
+            $importService->handle($filePath, new TestMode());
+        } else {
             $importService->handle($filePath, new StandartMode($this->em));
-        //}
-
+            $output->writeln($importService->getResultMessage());
+            $output->writeln($importService->getFailProductsMessage());
+        }
     }
 
 }

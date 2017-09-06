@@ -6,8 +6,9 @@
  * Time: 19.59
  */
 
-namespace AppBundle\ImportMods;
+namespace AppBundle\Models\ImportMods;
 use AppBundle\ImportMods;
+use League\Csv\Exception;
 
 class StandartMode implements Mode
 {
@@ -18,7 +19,11 @@ class StandartMode implements Mode
         $this->em = $em;
     }
 
-    public function import(array $products) {
-
+    public function import(array $products)
+    {
+        foreach ($products as $product) {
+            $this->em->persist($product);
+        }
+        $this->em->flush();
     }
 }

@@ -6,14 +6,15 @@
  * Time: 20.01
  */
 
-namespace AppBundle\ImportMods;
+namespace AppBundle\Models\ImportMods;
 use AppBundle\ImportMods;
 
 class TestMode implements Mode
 {
     public function __construct() {}
 
-    public function import(array $products) {
+    public function import(array $products)
+    {
 
     }
 }

@@ -7,20 +7,19 @@
  */
 
 namespace AppBundle\Services;
-use AppBundle\Entity\Product;
-use League\Csv\Reader;
-use League\Csv\Statement;
-use AppBundle\ImportMods\Mode;
-use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\Validator\Constraints\DateTime;
-use Symfony\Component\VarDumper\Cloner\Data;
+
+use AppBundle\Models\ImportMods\Mode;
+use AppBundle\Models\Parsers\Parser;
+use AppBundle\Models\Validators\Validator;
 
 class ImportService
 {
-    protected $em;
-    protected $container;
-    protected $reader;
-    protected $mode;
+    private $em;
+    private $container;
+    private $skipped = 0;
+    private $successful = 0;
+    private $processed = 0;
+    private $skippedItems = [];
 
     public function __construct($container)
     {
@@ -28,35 +27,43 @@ class ImportService
         $this->em = $container->get('doctrine.orm.entity_manager');
     }
 
-    public function handle(string $filePath, Mode $mode)
+    public function handle(Mode $mode, Parser $parser, Validator $validator)
     {
-        $this->mode = $mode;
-        $reader = Reader::createFromPath($filePath);
-        $reader->setHeaderOffset(0);
-        $records = (new Statement())->process($reader);
-        $headers = $records->getHeader();
-        $products = [];
+        $parser->parse();
+        $items = $parser->getItems();
+        $this->processed = $parser->getProcessedCount();
 
-        foreach ($records as $record) {
-            $product = new Product();
-            $product->setCode($record[$headers[0]]);
-            $product->setName($record[$headers[1]]);
-            $product->setDesc($record[$headers[2]]);
-            $product->setStock($record[$headers[3]]);
-            $product->setCost($record[$headers[4]]);
-            $product->setDiscontinued($record[$headers[5]]);
-            //$product->setAddAt(new \DateTime());
-            array_push($products, $product);
-        }
-        $str = $this->em->getClassMetadata(Product::class)->getFieldNames();
-        foreach ($products as $product) {
-            $errors = $this->container->get('validator')->validate($product);
-        }
-        $this->import($products);
+        $validator->validate($items);
+        $this->successful = $validator->getSuccessfulCount();
+        $this->skipped = $validator->getSkippedCount();
+
+        $successfulItems = $validator->getSuccessfulItems();
+
+        $this->import($successfulItems, $mode);
     }
 
-    private function import(array $products) : void
+    private function import(array $products, $mode)
     {
-        $this->mode->import($products);
+        $mode->import($products);
+    }
+
+    public function getSkippedItems()
+    {
+        return $this->skippedItems;
+    }
+
+    public function getSkipped(): int
+    {
+        return $this->skipped;
+    }
+
+    public function getSuccessful(): int
+    {
+        return $this->successful;
+    }
+
+    public function getProcessed(): int
+    {
+        return $this->processed;
     }
 }

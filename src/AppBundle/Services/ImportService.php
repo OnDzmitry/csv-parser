@@ -42,26 +42,42 @@ class ImportService
         $this->import($successfulItems, $mode);
     }
 
+    /**
+     * @param array $products
+     * @param $mode
+     */
     private function import(array $products, $mode)
     {
         $mode->import($products);
     }
 
+    /**
+     * @return array
+     */
     public function getSkippedItems()
     {
         return $this->skippedItems;
     }
 
+    /**
+     * @return int
+     */
     public function getSkipped(): int
     {
         return $this->skipped;
     }
 
+    /**
+     * @return int
+     */
     public function getSuccessful(): int
     {
         return $this->successful;
     }
 
+    /**
+     * @return int
+     */
     public function getProcessed(): int
     {
         return $this->processed;

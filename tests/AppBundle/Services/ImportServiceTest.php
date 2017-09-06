@@ -63,6 +63,20 @@ class ImportServiceTest extends WebTestCase
             Product::class);
 
         $this->importService->handle(new TestMode(), $this->parser, $this->validator);
-        $this->assertEquals($this->importService->getSkipped(), 5);
+        $this->assertEquals($this->importService->getSkipped(), 6);
+    }
+
+    public function testDublicateCodeProductImport()
+    {
+        $this->getImportService();
+        $kernel = static::bootKernel();
+
+        $this->parser = new CsvParser(
+            "/var/www/csv-parser/tests/AppBundle/Files/stock-dublicate.csv",
+            $this->mapping,
+            Product::class);
+
+        $this->importService->handle(new TestMode(), $this->parser, $this->validator);
+        $this->assertEquals($this->importService->getSkipped(), 1);
     }
 }

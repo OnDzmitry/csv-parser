@@ -20,6 +20,7 @@ use Symfony\Component\Validator\Constraints\DateTime;
  */
 class Product
 {
+
     /**
      * @var integer
      *
@@ -258,6 +259,12 @@ class Product
 
         return $resultStr;
     }
+    public function __construct()
+    {
+        $this->addAt = new \DateTime("now");
+        $this->timestamp = new \DateTime("now");
+    }
+
     public function __set($property, $value)
     {
         $this->$property = $value;

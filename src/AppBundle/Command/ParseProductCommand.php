@@ -2,16 +2,19 @@
 
 namespace AppBundle\Command;
 
-use AppBundle\ImportMods\StandartMode;
-use AppBundle\ImportMods\TestMode;
-use League\Csv\Reader;
-use League\Csv\Statement;
+use AppBundle\Entity\Product;
+use AppBundle\Models\ImportMods\StandartMode;
+use AppBundle\Models\ImportMods\TestMode;
+use AppBundle\Models\MessageConsoleHelper;
+use AppBundle\Models\Parsers\CsvParser;
+use AppBundle\Models\Validators\ProductValidator;
+use AppBundle\Services\ImportService;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use AppBundle\Services\ImportService;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class ParseProductCommand extends ContainerAwareCommand
 {
@@ -33,17 +36,28 @@ class ParseProductCommand extends ContainerAwareCommand
         $filePath = $input->getArgument('filePath');
         $mode = $input->getOption('mode');
 
-        $p = $this->getContainer()->getParameter('mapping');
+        $mapping = $this->getContainer()->getParameter('product.mapping');
+
+
+        $parser = new CsvParser($filePath, $mapping, Product::class);
+        $validator = new ProductValidator($this->getContainer());
 
         $importService = $this->getContainer()->get(ImportService::class);
 
         if (strcasecmp($mode, 'test') === 0) {
-            $importService->handle($filePath, new TestMode());
+            $importService->handle(new TestMode(), $parser, $validator);
         } else {
-            $importService->handle($filePath, new StandartMode($this->em));
-            $output->writeln($importService->getResultMessage());
-            $output->writeln($importService->getFailProductsMessage());
+            $importService->handle(new StandartMode($this->em), $parser, $validator);
         }
+
+        $failItems = $validator->getSkippedItems();
+        $output->writeln(
+            MessageConsoleHelper::getProcessEndMessage(
+                $parser->getProcessedCount(),
+                $importService->getSuccessful(),
+                $importService->getSkipped()
+        ));
+        $output->writeln(MessageConsoleHelper::getFailItemsMessage($failItems));
     }
 
 }

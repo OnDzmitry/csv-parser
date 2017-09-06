@@ -6,7 +6,7 @@
  * Time: 19.59
  */
 
-namespace AppBundle\ImportMods;
+namespace AppBundle\Models\ImportMods;
 use AppBundle\ImportMods;
 use League\Csv\Exception;
 

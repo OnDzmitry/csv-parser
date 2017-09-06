@@ -39,20 +39,24 @@ class ProductValidator implements Validator
     public function validate(array $products)
     {
         $validator = $this->container->get('validator');
+
         foreach ($products as $product) {
             $tempProduct = $this->productRepository->findOneByCode($product->getCode());
+
             if (isset($tempProduct)) {
-                $product = $tempProduct;
+                $product->setId($tempProduct->getId());
                 $product->setAddAt($tempProduct->getAddAt());
                 $product->setTimestamp($tempProduct->getTimestamp());
             }
+
             $errors = $validator->validate($product);
+
             if (count($errors) >= 1) {
                 array_push($this->skippedProducts, ['item'=>$product, 'errors'=> $errors]);
-                ++$this->skipped;
+                $this->skipped++;
             } else {
                 array_push($this->successfulProducts, $product);
-                ++$this->succesful;
+                $this->succesful++;
             }
         }
     }

@@ -22,7 +22,9 @@ class StandartMode implements Mode
     public function import(array $products)
     {
         foreach ($products as $product) {
-            $this->em->persist($product);
+            if ($product->getId() === null) {
+                $this->em->persist($product);
+            }
         }
         $this->em->flush();
     }

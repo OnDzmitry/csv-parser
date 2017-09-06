@@ -14,7 +14,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class ParseProductCommand extends ContainerAwareCommand
 {
@@ -37,7 +36,6 @@ class ParseProductCommand extends ContainerAwareCommand
         $mode = $input->getOption('mode');
 
         $mapping = $this->getContainer()->getParameter('product.mapping');
-
 
         $parser = new CsvParser($filePath, $mapping, Product::class);
         $validator = new ProductValidator($this->getContainer());

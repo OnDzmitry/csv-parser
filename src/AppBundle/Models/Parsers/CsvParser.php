@@ -41,11 +41,17 @@ class CsvParser implements Parser
         }
     }
 
+    /**
+     * @return int
+     */
     public function getProcessedCount() : int
     {
         return $this->processed;
     }
 
+    /**
+     * @return array
+     */
     public function getItems() : array
     {
         return $this->items;

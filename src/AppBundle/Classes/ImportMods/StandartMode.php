@@ -7,7 +7,6 @@
  */
 
 namespace AppBundle\Models\ImportMods;
-use AppBundle\ImportMods;
 use Doctrine\ORM\EntityManager;
 
 class StandartMode implements Mode

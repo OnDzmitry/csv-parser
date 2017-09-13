@@ -37,5 +37,16 @@ services:
             autowire: true
             public: true
             class: AppBundle\Services\ImportService
-            arguments: ['@doctrine.orm.default_entity_manager']
+            arguments: ['@doctrine.orm.default_entity_manager', '@app.csv_parser', '@app.product_validator']
 
+    app.csv_parser:
+            autowire: true
+            public: true
+            class: AppBundle\Services\Parsers\CsvParser
+            arguments: ['/home/ITRANSITION.CORP/d2.kozlovsky/Downloads/stock.csv','%product.mapping%', 'AppBundle\Entity\Product' ]
+
+    app.product_validator:
+            autowire: true
+            public: true
+            class: AppBundle\Services\Validators\ProductValidator
+            arguments: ['@doctrine.orm.default_entity_manager', '@validator']

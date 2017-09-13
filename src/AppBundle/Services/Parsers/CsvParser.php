@@ -6,8 +6,9 @@
  * Time: 15.57
  */
 
-namespace AppBundle\Models\Parsers;
+namespace AppBundle\Services\Parsers;
 
+use AppBundle\Entity\Product;
 use League\Csv\Reader;
 use League\Csv\Statement;
 use Symfony\Component\PropertyAccess\PropertyAccess;

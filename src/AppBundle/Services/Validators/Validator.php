@@ -6,7 +6,7 @@
  * Time: 17.47
  */
 
-namespace AppBundle\Models\Validators;
+namespace AppBundle\Services\Validators;
 
 
 interface Validator

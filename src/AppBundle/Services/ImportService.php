@@ -9,32 +9,42 @@
 namespace AppBundle\Services;
 
 use AppBundle\Models\ImportMods\Mode;
-use AppBundle\Models\Parsers\Parser;
-use AppBundle\Models\Validators\Validator;
+use AppBundle\Services\Parsers\Parser;
+use AppBundle\Services\Validators\Validator;
 use Doctrine\ORM\EntityManager;
 
 class ImportService
+
 {
     private $em;
     private $skipped = 0;
     private $successful = 0;
     private $processed = 0;
     private $skippedItems = [];
+    private $parser;
+    private $validator;
 
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, Parser $parser, Validator $validator)
     {
         $this->em = $em;
+        $this->parser = $parser;
+        $this->validator = $validator;
     }
 
-    public function handle(Mode $mode, Parser $parser, Validator $validator)
+    public function handle(Mode $mode)
     {
+        $parser = $this->parser;
+        $validator = $this->validator;
+
         $parser->parse();
         $items = $parser->getItems();
         $this->processed = $parser->getProcessedCount();
 
         $validator->validate($items);
+
         $this->successful = $validator->getSuccessfulCount();
         $this->skipped = $validator->getSkippedCount();
+        $this->skippedItems = $validator->getSkippedItems();
 
         $successfulItems = $validator->getSuccessfulItems();
 

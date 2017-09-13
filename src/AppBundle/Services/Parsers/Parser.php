@@ -6,7 +6,7 @@
  * Time: 16.05
  */
 
-namespace AppBundle\Models\Parsers;
+namespace AppBundle\Services\Parsers;
 
 
 interface Parser

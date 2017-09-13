@@ -11,20 +11,19 @@ namespace AppBundle\Services;
 use AppBundle\Models\ImportMods\Mode;
 use AppBundle\Models\Parsers\Parser;
 use AppBundle\Models\Validators\Validator;
+use Doctrine\ORM\EntityManager;
 
 class ImportService
 {
     private $em;
-    private $container;
     private $skipped = 0;
     private $successful = 0;
     private $processed = 0;
     private $skippedItems = [];
 
-    public function __construct($container)
+    public function __construct(EntityManager $em)
     {
-        $this->container = $container;
-        $this->em = $container->get('doctrine.orm.entity_manager');
+        $this->em = $em;
     }
 
     public function handle(Mode $mode, Parser $parser, Validator $validator)

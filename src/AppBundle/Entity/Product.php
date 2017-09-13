@@ -81,14 +81,14 @@ class Product
      * @var \DateTime
      * @ORM\Column(name="dtmAdded", type="datetime", nullable=true)
      */
-    private $addAt;
+    private $addedAt;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="dtmDiscontinued", type="datetime", nullable=true)
      */
-    private $discontinued;
+    private $discontinuedAt;
 
     /**
      * @var \DateTime
@@ -197,34 +197,32 @@ class Product
     /**
      * @return \DateTime
      */
-    public function getAddAt()
+    public function getAddedAt()
     {
-        return $this->addAt;
+        return $this->addedAt;
     }
 
     /**
-     * @param \DateTime $addAt
+     * @param \DateTime $addedAt
      */
-    public function setAddAt($addAt)
+    public function setAddedAt($addedAt)
     {
-        $this->addAt = $addAt;
+        $this->addedAt = $addedAt;
     }
     /**
      * @return \DateTime
      */
-    public function getDiscontinued()
+    public function getDiscontinuedAt()
     {
-        return $this->discontinued;
+        return $this->discontinuedAt;
     }
 
     /**
-     * @param \DateTime $discontinued
+     * @param \DateTime $discontinuedAt
      */
-    public function setDiscontinued($discontinued)
+    public function setDiscontinued($discontinuedAt)
     {
-        if (strnatcasecmp($discontinued, 'yes') === 0) {
-            $this->discontinued = new \DateTime("now");
-        }
+        $this->discontinuedAt = $discontinuedAt;
     }
 
     /**
@@ -250,19 +248,19 @@ class Product
             ' Desc: ' . $this->desc .
             ' Cost: ' . $this->cost .
             ' Stock:' . $this->stock;
-        if ($this->discontinued !== null) {
-            $resultStr .= ' Discontinued' . $this->discontinued->format('Y-m-d H:i:s');
+        if ($this->discontinuedAt !== null) {
+            $resultStr .= ' DiscontinuedAt' . $this->discontinuedAt->format('Y-m-d H:i:s');
         }
-        if ($this->addAt !== null) {
-            $resultStr .= ' Add at ' . $this->addAt->format('Y-m-d H:i:s');
+        if ($this->addedAt !== null) {
+            $resultStr .= ' Add at ' . $this->addedAt->format('Y-m-d H:i:s');
         }
 
         return $resultStr;
     }
     public function __construct()
     {
-        $this->addAt = new \DateTime("now");
-        $this->timestamp = new \DateTime("now");
+        $this->addedAt = new \DateTime('now');
+        $this->timestamp = new \DateTime('now');
     }
 
     public function __set($property, $value)

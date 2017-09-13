@@ -10,6 +10,8 @@ namespace AppBundle\Models\Validators;
 
 
 use AppBundle\Entity\Product;
+use AppBundle\Repository\ProductRepository;
+use Doctrine\ORM\EntityRepository;
 
 class ProductValidator implements Validator
 {
@@ -19,37 +21,46 @@ class ProductValidator implements Validator
     private $successfulProducts = [];
     private $skippedProducts = [];
     private $productRepository;
+    private $validator;
 
-    public function __construct($container)
+    public function __construct(EntityRepository $productRepository, $validator)
     {
-        $this->container = $container;
-        $this->productRepository = $container->get('doctrine.orm.default_entity_manager')->getRepository(Product::class);
+        $this->productRepository = $productRepository;
+        $this->validator = $validator;
     }
 
+    /**
+     * @return int
+     */
     public function getSkippedCount(): int
     {
         return $this->skipped;
     }
+
+    /**
+     * @return int
+     */
 
     public function getSuccessfulCount(): int
     {
         return $this->succesful;
     }
 
+    /**
+     * @param array $products
+     */
     public function validate(array $products)
     {
-        $validator = $this->container->get('validator');
 
         foreach ($products as $product) {
             $tempProduct = $this->productRepository->findOneByCode($product->getCode());
 
             if (isset($tempProduct)) {
                 $product->setId($tempProduct->getId());
-                $product->setAddAt($tempProduct->getAddAt());
-                $product->setTimestamp($tempProduct->getTimestamp());
+                $product->setAddedAt($tempProduct->getAddedAt());
             }
 
-            $errors = $validator->validate($product);
+            $errors = $this->validator->validate($product);
 
             if (count($errors) >= 1) {
                 array_push($this->skippedProducts, ['item'=>$product, 'errors'=> $errors]);
@@ -61,11 +72,17 @@ class ProductValidator implements Validator
         }
     }
 
+    /**
+     * @return array
+     */
     public function getSuccessfulItems() : array
     {
         return $this->successfulProducts;
     }
 
+    /**
+     * @return array
+     */
     public function getSkippedItems() : array
     {
         return $this->skippedProducts;

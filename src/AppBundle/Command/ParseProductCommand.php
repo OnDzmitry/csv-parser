@@ -17,35 +17,34 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ParseProductCommand extends ContainerAwareCommand
 {
-    private $em;
-
-    protected function configure()
+        protected function configure()
     {
         $this
             ->setName('app:parse-product')
             ->setDescription('Parse command')
-            ->addArgument('filePath', InputArgument::REQUIRED, 'Path to file')
+            ->addArgument('file_path', InputArgument::REQUIRED, 'Path to file')
             ->addOption('mode', null, InputOption::VALUE_NONE, 'Have one mode: \'test\'')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $filePath = $input->getArgument('filePath');
+        $filePath = $input->getArgument('file_path');
         $mode = $input->getOption('mode');
-
         $mapping = $this->getContainer()->getParameter('product.mapping');
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $validator = $this->getContainer()->get('validator');
+
+        $importService = $this->getContainer()->get('app.import_service');
+        $productRepository = $em->getRepository(Product::class);
 
         $parser = new CsvParser($filePath, $mapping, Product::class);
-        $validator = new ProductValidator($this->getContainer());
-
-        $importService = $this->getContainer()->get(ImportService::class);
+        $validator = new ProductValidator($productRepository, $validator);
 
         if (strcasecmp($mode, 'test') === 0) {
             $importService->handle(new TestMode(), $parser, $validator);
         } else {
-            $importService->handle(new StandartMode($this->em), $parser, $validator);
+            $importService->handle(new StandartMode($em), $parser, $validator);
         }
 
         $failItems = $validator->getSkippedItems();

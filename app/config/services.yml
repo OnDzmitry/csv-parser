@@ -33,7 +33,9 @@ services:
     # AppBundle\Service\ExampleService:
     #     arguments:
     #         $someArgument: 'some_value'
-    AppBundle\Services\ImportService:
+    app.import_service:
             autowire: true
             public: true
-            arguments: ['@service_container', '@doctrine.orm.default_entity_manager']
+            class: AppBundle\Services\ImportService
+            arguments: ['@doctrine.orm.default_entity_manager']
+

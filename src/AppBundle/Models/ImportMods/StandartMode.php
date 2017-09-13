@@ -8,22 +8,25 @@
 
 namespace AppBundle\Models\ImportMods;
 use AppBundle\ImportMods;
-use League\Csv\Exception;
+use Doctrine\ORM\EntityManager;
 
 class StandartMode implements Mode
 {
     private $em;
 
-    public function __construct($em)
+    public function __construct(EntityManager $em)
     {
         $this->em = $em;
     }
 
     public function import(array $products)
     {
-        foreach ($products as $product) {
-            if ($product->getId() === null) {
-                $this->em->persist($product);
+        for ($i = 0; $i < count($products); $i++) {
+            if ($products[$i]->getId() === null) {
+                $this->em->persist($products[$i]);
+            }
+            if ($i % 100 === 0) {
+                $this->em->flush();
             }
         }
         $this->em->flush();

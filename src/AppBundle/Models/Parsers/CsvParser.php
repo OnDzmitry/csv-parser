@@ -32,6 +32,9 @@ class CsvParser implements Parser
         $this->mapping = $mapping;
     }
 
+    /**
+     *
+     */
     public function parse()
     {
         foreach ($this->records as $record) {
@@ -64,7 +67,15 @@ class CsvParser implements Parser
             ->enableMagicCall()
             ->getPropertyAccessor();
         foreach ($this->mapping as $fileHeaders => $objectProperty) {
-            $accessor->setValue($item, $objectProperty, $record[$fileHeaders]);
+            if ($fileHeaders === 'Discontinued') {
+                if (strnatcasecmp($record[$fileHeaders], 'yes') === 0) {
+                    $accessor->setValue($item, $objectProperty, new \DateTime('now'));
+                } else {
+                    $accessor->setValue($item, $objectProperty, null);
+                }
+            } else {
+                $accessor->setValue($item, $objectProperty, $record[$fileHeaders]);
+            }
         }
         return $item;
     }

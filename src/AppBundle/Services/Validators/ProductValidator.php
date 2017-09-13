@@ -10,6 +10,7 @@ namespace AppBundle\Services\Validators;
 
 use AppBundle\Entity\Product;
 use Doctrine\ORM\EntityManager;
+use function Symfony\Component\Debug\Tests\testHeader;
 use Symfony\Component\Validator\Validator\ValidatorInterface as SymfonyValidator;
 
 class ProductValidator implements Validator
@@ -53,25 +54,44 @@ class ProductValidator implements Validator
             $tempProduct = $this->productRepository->findOneByCode($product->getCode());
 
             if (isset($tempProduct)) {
-                array_push($this->skippedProducts, ['item'=>$product, 'errors'=> '***Dublicate code' . "\n"]);
-                $this->skipped++;
-                continue;
+                $product->setId($tempProduct->getId());
+                $product->setAddedAt($tempProduct->getAddedAt());
             }
 
             $errors = $this->symfonyValidator->validate($product);
+
 
             if (count($errors) >= 1) {
                 $errorStr = "";
                 foreach ($errors as $error) {
                     $errorStr .= '***' . $error->getMessage() . "\n";
                 }
-                array_push($this->skippedProducts, ['item'=>$product, 'errors'=> $errorStr]);
+                array_push($this->skippedProducts, ['item' => $product, 'errors' => $errorStr]);
+                $this->skipped++;
+            } else if ($this->isDublicateCode($product->getCode())) {
+                array_push($this->skippedProducts, ['item' => $product, 'errors' => '***Dublicate item' . "\n"]);
                 $this->skipped++;
             } else {
                 array_push($this->successfulProducts, $product);
                 $this->succesful++;
             }
         }
+
+
+    }
+
+    /**
+     * @param $code
+     * @return bool
+     */
+    function isDublicateCode($code) : bool
+    {
+        foreach ($this->successfulProducts as $item) {
+            if ($code === $item->getCode()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

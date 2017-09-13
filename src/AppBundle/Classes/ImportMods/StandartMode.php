@@ -6,7 +6,7 @@
  * Time: 19.59
  */
 
-namespace AppBundle\Models\ImportMods;
+namespace AppBundle\Classes\ImportMods;
 use Doctrine\ORM\EntityManager;
 
 class StandartMode implements Mode

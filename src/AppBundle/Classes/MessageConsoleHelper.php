@@ -5,7 +5,7 @@
  * Date: 6.9.17
  * Time: 17.12
  */
-namespace AppBundle\Models;
+namespace AppBundle\Classes;
 
 class MessageConsoleHelper
 {
@@ -21,10 +21,7 @@ class MessageConsoleHelper
     {
         $resutlStr = "Items which fail to be inserted correctly:\n";
         foreach ($failItems as $record) {
-            $resutlStr .= $record['item'] . "\n";
-            foreach ($record['errors'] as $error) {
-                $resutlStr .= '***' . $error->getMessage() . "\n";
-            }
+            $resutlStr .= $record['item'] . "\n" . $record['errors'];
         }
         return $resutlStr;
     }

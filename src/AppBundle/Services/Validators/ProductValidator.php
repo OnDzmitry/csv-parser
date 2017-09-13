@@ -51,16 +51,21 @@ class ProductValidator implements Validator
     {
         foreach ($products as $product) {
             $tempProduct = $this->productRepository->findOneByCode($product->getCode());
-            
+
             if (isset($tempProduct)) {
-                $product->setId($tempProduct->getId());
-                $product->setAddedAt($tempProduct->getAddedAt());
+                array_push($this->skippedProducts, ['item'=>$product, 'errors'=> '***Dublicate code' . "\n"]);
+                $this->skipped++;
+                continue;
             }
 
             $errors = $this->symfonyValidator->validate($product);
 
             if (count($errors) >= 1) {
-                array_push($this->skippedProducts, ['item'=>$product, 'errors'=> $errors]);
+                $errorStr = "";
+                foreach ($errors as $error) {
+                    $errorStr .= '***' . $error->getMessage() . "\n";
+                }
+                array_push($this->skippedProducts, ['item'=>$product, 'errors'=> $errorStr]);
                 $this->skipped++;
             } else {
                 array_push($this->successfulProducts, $product);

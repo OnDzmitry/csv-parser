@@ -6,7 +6,7 @@
  * Time: 19.58
  */
 
-namespace AppBundle\Models\ImportMods;
+namespace AppBundle\Classes\ImportMods;
 
 interface Mode
 {

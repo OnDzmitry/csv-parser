@@ -8,7 +8,7 @@
 
 namespace AppBundle\Services;
 
-use AppBundle\Models\ImportMods\Mode;
+use AppBundle\Classes\ImportMods\Mode;
 use AppBundle\Services\Parsers\Parser;
 use AppBundle\Services\Validators\Validator;
 use Doctrine\ORM\EntityManager;
@@ -31,11 +31,12 @@ class ImportService
         $this->validator = $validator;
     }
 
-    public function handle(Mode $mode)
+    public function handle($filePath, Mode $mode)
     {
         $parser = $this->parser;
         $validator = $this->validator;
 
+        $parser->setPath($filePath);
         $parser->parse();
         $items = $parser->getItems();
         $this->processed = $parser->getProcessedCount();

@@ -2,11 +2,9 @@
 
 namespace AppBundle\Command;
 
-use AppBundle\Entity\Product;
-use AppBundle\Models\ImportMods\StandartMode;
-use AppBundle\Models\ImportMods\TestMode;
-use AppBundle\Models\MessageConsoleHelper;
-use AppBundle\Services\ImportService;
+use AppBundle\Classes\ImportMods\StandartMode;
+use AppBundle\Classes\ImportMods\TestMode;
+use AppBundle\Classes\MessageConsoleHelper;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -29,15 +27,14 @@ class ParseProductCommand extends ContainerAwareCommand
     {
         $filePath = $input->getArgument('file_path');
         $mode = $input->getOption('mode');
-        $mapping = $this->getContainer()->getParameter('product.mapping');
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
         $importService = $this->getContainer()->get('app.import_service');
 
         if (strcasecmp($mode, 'test') === 0) {
-            $importService->handle(new TestMode());
+            $importService->handle($filePath, new TestMode());
         } else {
-            $importService->handle(new StandartMode($em));
+            $importService->handle($filePath, new StandartMode($em));
         }
 
         $failItems = $importService->getSkippedItems();

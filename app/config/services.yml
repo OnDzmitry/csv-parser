@@ -43,7 +43,7 @@ services:
             autowire: true
             public: true
             class: AppBundle\Services\Parsers\CsvParser
-            arguments: ['/home/ITRANSITION.CORP/d2.kozlovsky/Downloads/stock.csv','%product.mapping%', 'AppBundle\Entity\Product' ]
+            arguments: ['%product.mapping%', 'AppBundle\Entity\Product' ]
 
     app.product_validator:
             autowire: true

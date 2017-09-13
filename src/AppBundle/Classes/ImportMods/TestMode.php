@@ -6,7 +6,7 @@
  * Time: 20.01
  */
 
-namespace AppBundle\Models\ImportMods;
+namespace AppBundle\Classes\ImportMods;
 
 class TestMode implements Mode
 {

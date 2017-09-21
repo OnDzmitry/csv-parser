@@ -86,7 +86,7 @@ class ProductValidator implements Validator
      * @param int $code
      * @return bool
      */
-    function isDublicateCode(int $code) : bool
+    private function isDublicateCode(int $code) : bool
     {
         foreach ($this->successfulProducts as $item) {
             if ($code === $item->getCode()) {

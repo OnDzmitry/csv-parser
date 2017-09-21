@@ -22,23 +22,45 @@ class CsvParser implements Parser
     private $items = [];
     private $mapping;
 
-    public function __construct($mapping, $entity)
+    public function __construct(array $mapping, $entity)
     {
         $this->entity = $entity;
         $this->mapping = $mapping;
     }
 
-    public function setPath($filePath)
+    /**
+     * @param string $filePath
+     */
+    public function setPath(string $filePath) : void
     {
         $this->reader = Reader::createFromPath($filePath);
         $this->reader->setHeaderOffset(0);
         $this->records = (new Statement())->process($this->reader);
     }
 
-    public function parse()
+    /**
+     *
+     */
+    public function parse() : void
     {
         foreach ($this->records as $record) {
-            $item = $this->getItemObject($record);
+            $item = new $this->entity();
+
+            $accessor = PropertyAccess::createPropertyAccessorBuilder()
+                ->getPropertyAccessor();
+
+            foreach ($this->mapping as $fileHeaders => $objectProperty) {
+                if ($fileHeaders === 'Discontinued') {
+                    if (strnatcasecmp($record[$fileHeaders], 'yes') === 0) {
+                        $accessor->setValue($item, $objectProperty, new \DateTime('now'));
+                    } else {
+                        $accessor->setValue($item, $objectProperty, null);
+                    }
+                } else {
+                    $accessor->setValue($item, $objectProperty, $record[$fileHeaders]);
+                }
+            }
+
             array_push($this->items, $item);
             ++$this->processed;
         }
@@ -58,25 +80,5 @@ class CsvParser implements Parser
     public function getItems() : array
     {
         return $this->items;
-    }
-
-    private function getItemObject($record)
-    {
-        $item = new $this->entity();
-        $accessor = PropertyAccess::createPropertyAccessorBuilder()
-            ->enableMagicCall()
-            ->getPropertyAccessor();
-        foreach ($this->mapping as $fileHeaders => $objectProperty) {
-            if ($fileHeaders === 'Discontinued') {
-                if (strnatcasecmp($record[$fileHeaders], 'yes') === 0) {
-                    $accessor->setValue($item, $objectProperty, new \DateTime('now'));
-                } else {
-                    $accessor->setValue($item, $objectProperty, null);
-                }
-            } else {
-                $accessor->setValue($item, $objectProperty, $record[$fileHeaders]);
-            }
-        }
-        return $item;
     }
 }

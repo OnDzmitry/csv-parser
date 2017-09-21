@@ -67,7 +67,7 @@ class Product
      * @Assert\NotBlank(message="Product description should not be blank");
      * @ORM\Column(name="strProductDesc", type="string", length=255, nullable=false)
      */
-    private $desc;
+    private $description;
 
     /**
      * @var string
@@ -105,15 +105,6 @@ class Product
     {
         return $this->id;
     }
-
-    /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
     /**
      * @return float
      */
@@ -165,17 +156,17 @@ class Product
     /**
      * @return string
      */
-    public function getDesc()
+    public function getDescription()
     {
-        return $this->desc;
+        return $this->description;
     }
 
     /**
-     * @param string $desc
+     * @param string $description
      */
-    public function setDesc($desc)
+    public function setDescription($description)
     {
-        $this->desc = $desc;
+        $this->description = $description;
     }
 
     /**
@@ -241,11 +232,14 @@ class Product
         $this->timestamp = $timestamp;
     }
 
+    /**
+     * @return string
+     */
     public function __toString() : string
     {
         $resultStr = 'Code: ' . $this->code .
             ' Name: ' . $this->name .
-            ' Desc: ' . $this->desc .
+            ' Desc: ' . $this->description .
             ' Cost: ' . $this->cost .
             ' Stock:' . $this->stock;
         if ($this->discontinuedAt !== null) {

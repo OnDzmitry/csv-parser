@@ -9,7 +9,13 @@ namespace AppBundle\Classes;
 
 class MessageConsoleHelper
 {
-    static public function getProcessEndMessage(int $processed, int $successful, int $skipped)
+    /**
+     * @param int $processed
+     * @param int $successful
+     * @param int $skipped
+     * @return string
+     */
+    static public function getProcessEndMessage(int $processed, int $successful, int $skipped) : string
     {
         return 'Process successful!' .
             'Processed ' . $processed . "\n" .
@@ -17,7 +23,11 @@ class MessageConsoleHelper
             'Skipped ' . $skipped . "\n";
     }
 
-    static public function getFailItemsMessage(array $failItems)
+    /**
+     * @param array $failItems
+     * @return string
+     */
+    static public function getFailItemsMessage(array $failItems) : string
     {
         $resutlStr = "Items which fail to be inserted correctly:\n";
         foreach ($failItems as $record) {

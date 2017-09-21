@@ -10,7 +10,7 @@ parameters:
     product.mapping:
       'Product Code': 'code'
       'Product Name': 'name'
-      'Product Description': 'desc'
+      'Product Description': 'description'
       'Stock': 'stock'
       'Cost in GBP': 'cost'
       'Discontinued': 'discontinuedAt'

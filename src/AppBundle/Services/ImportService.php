@@ -31,7 +31,11 @@ class ImportService
         $this->validator = $validator;
     }
 
-    public function handle($filePath, Mode $mode)
+    /**
+     * @param string $filePath
+     * @param Mode $mode
+     */
+    public function handle(string $filePath, Mode $mode) : void
     {
         $parser = $this->parser;
         $validator = $this->validator;
@@ -56,7 +60,7 @@ class ImportService
      * @param array $products
      * @param $mode
      */
-    private function import(array $products, $mode)
+    private function import(array $products, Mode $mode) : void
     {
         $mode->import($products);
     }
@@ -64,7 +68,7 @@ class ImportService
     /**
      * @return array
      */
-    public function getSkippedItems()
+    public function getSkippedItems() : array
     {
         return $this->skippedItems;
     }

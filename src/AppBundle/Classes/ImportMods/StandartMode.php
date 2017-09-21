@@ -18,7 +18,10 @@ class StandartMode implements Mode
         $this->em = $em;
     }
 
-    public function import(array $products)
+    /**
+     * @param array $products
+     */
+    public function import(array $products) : void
     {
         for ($i = 0; $i < count($products); $i++) {
             if ($products[$i]->getId() === null) {

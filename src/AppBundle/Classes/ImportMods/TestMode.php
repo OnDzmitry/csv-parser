@@ -12,7 +12,10 @@ class TestMode implements Mode
 {
     public function __construct() {}
 
-    public function import(array $products)
+    /**
+     * @param array $products
+     */
+    public function import(array $products) : void
     {
 
     }

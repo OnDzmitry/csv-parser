@@ -48,18 +48,20 @@ class ProductValidator implements Validator
     /**
      * @param array $products
      */
-    public function validate(array $products)
+    public function validate(array $products) : void
     {
         foreach ($products as $product) {
             $tempProduct = $this->productRepository->findOneByCode($product->getCode());
-
             if (isset($tempProduct)) {
-                $product->setId($tempProduct->getId());
-                $product->setAddedAt($tempProduct->getAddedAt());
+                $tempProduct->setCost($product->getCost());
+                $tempProduct->setStock($product->getStock());
+                $tempProduct->setName($product->getName());
+                $tempProduct->setDescription($product->getDescription());
+                $tempProduct->setTimestamp($product->getTimestamp());
+                $product = $tempProduct;
             }
 
             $errors = $this->symfonyValidator->validate($product);
-
 
             if (count($errors) >= 1) {
                 $errorStr = "";
@@ -68,7 +70,7 @@ class ProductValidator implements Validator
                 }
                 array_push($this->skippedProducts, ['item' => $product, 'errors' => $errorStr]);
                 $this->skipped++;
-            } else if ($this->isDublicateCode($product->getCode())) {
+            } else if ($this->isDublicateCode((int)$product->getCode())) {
                 array_push($this->skippedProducts, ['item' => $product, 'errors' => '***Dublicate item' . "\n"]);
                 $this->skipped++;
             } else {
@@ -81,10 +83,10 @@ class ProductValidator implements Validator
     }
 
     /**
-     * @param $code
+     * @param int $code
      * @return bool
      */
-    function isDublicateCode($code) : bool
+    function isDublicateCode(int $code) : bool
     {
         foreach ($this->successfulProducts as $item) {
             if ($code === $item->getCode()) {

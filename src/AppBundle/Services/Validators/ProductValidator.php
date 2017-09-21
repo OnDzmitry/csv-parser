@@ -10,7 +10,6 @@ namespace AppBundle\Services\Validators;
 
 use AppBundle\Entity\Product;
 use Doctrine\ORM\EntityManager;
-use function Symfony\Component\Debug\Tests\testHeader;
 use Symfony\Component\Validator\Validator\ValidatorInterface as SymfonyValidator;
 
 class ProductValidator implements Validator

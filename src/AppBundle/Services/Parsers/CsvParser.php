@@ -8,10 +8,8 @@
 
 namespace AppBundle\Services\Parsers;
 
-use AppBundle\Entity\Product;
 use League\Csv\Reader;
 use League\Csv\Statement;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class CsvParser implements Parser
 {
@@ -46,18 +44,16 @@ class CsvParser implements Parser
         foreach ($this->records as $record) {
             $item = new $this->entity();
 
-            $accessor = PropertyAccess::createPropertyAccessorBuilder()
-                ->getPropertyAccessor();
-
             foreach ($this->mapping as $fileHeaders => $objectProperty) {
+                $action = 'set' . $objectProperty;
                 if ($fileHeaders === 'Discontinued') {
                     if (strnatcasecmp($record[$fileHeaders], 'yes') === 0) {
-                        $accessor->setValue($item, $objectProperty, new \DateTime('now'));
+                        $item->$action(new \DateTime('now'));
                     } else {
-                        $accessor->setValue($item, $objectProperty, null);
+                        $item->$action(null);
                     }
                 } else {
-                    $accessor->setValue($item, $objectProperty, $record[$fileHeaders]);
+                    $item->$action($record[$fileHeaders]);
                 }
             }
 

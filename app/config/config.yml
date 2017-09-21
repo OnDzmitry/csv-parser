@@ -8,12 +8,12 @@ imports:
 parameters:
     locale: en
     product.mapping:
-      'Product Code': 'code'
-      'Product Name': 'name'
-      'Product Description': 'description'
-      'Stock': 'stock'
-      'Cost in GBP': 'cost'
-      'Discontinued': 'discontinuedAt'
+      'Product Code': 'Code'
+      'Product Name': 'Name'
+      'Product Description': 'Description'
+      'Stock': 'Stock'
+      'Cost in GBP': 'Cost'
+      'Discontinued': 'DiscontinuedAt'
 
 
 framework:

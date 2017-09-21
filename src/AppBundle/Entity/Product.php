@@ -211,7 +211,7 @@ class Product
     /**
      * @param \DateTime $discontinuedAt
      */
-    public function setDiscontinued($discontinuedAt)
+    public function setDiscontinuedAt($discontinuedAt)
     {
         $this->discontinuedAt = $discontinuedAt;
     }
@@ -255,11 +255,6 @@ class Product
     {
         $this->addedAt = new \DateTime('now');
         $this->timestamp = new \DateTime('now');
-    }
-
-    public function __set($property, $value)
-    {
-        $this->$property = $value;
     }
 }
 
